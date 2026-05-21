@@ -1,26 +1,43 @@
 name: e2e
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
 
 jobs:
   playwright:
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('package.json') != '' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Detect Node project
+        id: detect
+        shell: bash
+        run: |
+          if [[ -f package.json ]]; then
+            echo "has_package=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_package=false" >> "$GITHUB_OUTPUT"
+            echo "No package.json found. Skipping optional Playwright e2e."
+          fi
       - uses: actions/setup-node@v4
+        if: steps.detect.outputs.has_package == 'true'
         with:
           node-version: "20"
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run e2e
+      - name: Install dependencies
+        if: steps.detect.outputs.has_package == 'true'
+        run: npm ci
+      - name: Install Playwright browser
+        if: steps.detect.outputs.has_package == 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Run e2e
+        if: steps.detect.outputs.has_package == 'true'
+        run: npm run e2e
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.detect.outputs.has_package == 'true'
         with:
           name: playwright-report
           path: playwright-report/
           if-no-files-found: ignore
-
