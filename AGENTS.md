@@ -13,7 +13,11 @@ Required first reads:
 5. `prompts/project-intake.md`
 6. `docs/harness.md`
 7. `docs/runtime.md`
-8. `docs/portable-setup.md`
-9. `docs/agent-guide.md`
+8. `docs/github-coordination.md`
+9. `docs/portable-setup.md`
+10. `docs/agent-guide.md`
+11. `docs/ux-critic.md` when changing visible product UX
 
 Do not implement non-trivial work before the SCOPE gate is confirmed.
+
+When the project uses GitHub, treat issues and pull requests as the shared coordination layer. Claim an agent task issue before editing, include a branch and scope lock, and keep the pull request evidence-backed.

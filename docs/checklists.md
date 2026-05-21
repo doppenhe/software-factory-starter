@@ -6,6 +6,8 @@
 - Read the communications and thinking rules.
 - Read SPEAR.
 - Read harness and runtime docs.
+- Read GitHub coordination docs when the project uses GitHub.
+- Read UX critic docs when visible UX changes.
 - If starter files do not exist, run `python3 scripts/init-project.py --name "<project name>"`.
 - Ask the project intake prompt batch.
 - Create `state/SCOPE.md`.
@@ -22,6 +24,8 @@
 - Proof surfaces are named.
 - Coverage axes are defined when QA matters.
 - Browser e2e decision is made for web projects.
+- GitHub epic and task issue strategy is named when parallel agents are expected.
+- Shared contracts are stable before independent implementation starts.
 
 ## Before Handoff
 
@@ -32,6 +36,8 @@
 - Briefs are refreshed if specs changed.
 - Logs, state, artifacts, and reports agree.
 - E2E evidence is attached when browser behavior is in scope.
+- PR links issue, tests, screenshots when UI changed, docs updated, and risks.
+- UX critic notes are included for visible UX changes.
 - `state/PROJECT_STATE.md` is updated.
 - `CLOSEOUT.md` exists or is embedded in the final response.
 

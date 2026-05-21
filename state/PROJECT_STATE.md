@@ -23,12 +23,14 @@ This starter repository is being created as a complete starting point for agent-
 - Road design governs the agent operating environment.
 - Specs hold L1 and L2. Code holds L3.
 - Brief is L1-only context. Spec is L1 plus L2 context.
-- Harness has three pieces: knowledge, workflow, and runtime.
+- Harness has four pieces once work is shared: knowledge, workflow, runtime, and coordination.
 - Proof surfaces are logs, state, artifacts, and reports.
 - Coverage is a span across named axes, not a raw count.
 - Browser e2e is optional and defaults to Playwright when web behavior is in scope.
 - Feature work should include cost, expected return, and payback when relevant.
 - The repository is portable and should work for any project owner after clone.
+- GitHub issues and PRs are the default coordination layer for parallel production work.
+- Visible UX changes should include a UX critic pass before human review.
 
 ## Assumptions
 
@@ -42,6 +44,7 @@ This starter repository is being created as a complete starting point for agent-
 - Whether to add CI checks for dash characters, placeholders, and required files.
 - Whether to generate Brief files from Spec files automatically.
 - Whether to expand the lightweight runner into worktree orchestration.
+- Whether to automate GitHub issue creation in a later iteration.
 
 ## Active Tasks
 
@@ -62,6 +65,8 @@ This starter repository is being created as a complete starting point for agent-
 - `docs/harness.md`
 - `docs/runtime.md`
 - `docs/proof-and-coverage.md`
+- `docs/github-coordination.md`
+- `docs/ux-critic.md`
 - `docs/roles-and-economics.md`
 - `scripts/init-project.py`
 - `scripts/ralph.py`
