@@ -33,6 +33,8 @@ The source PDF is not required at runtime. This file records the conceptual mapp
 | Portable runner helper | `scripts/ralph.py` |
 | Portable project setup | `scripts/init-project.py` |
 | CI preflight | `.github/workflows/preflight.yml` |
+| GitHub coordination | `docs/github-coordination.md`, `.github/ISSUE_TEMPLATE/agent-task.md`, `.github/ISSUE_TEMPLATE/spear-epic.md`, `.github/pull_request_template.md` |
+| UX critic | `docs/ux-critic.md` |
 
 ## Known Gaps
 
@@ -40,3 +42,4 @@ The source PDF is not required at runtime. This file records the conceptual mapp
 - CI includes a generic preflight and optional e2e workflow. Browser e2e runs only after Node dependencies are installed.
 - Brief generation is present, but intentionally simple.
 - Worktree orchestration is documented but not implemented.
+- GitHub coordination is documented through issues and PRs, but automated issue creation is intentionally left to the project or repo host.

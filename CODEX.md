@@ -22,12 +22,14 @@ If the user asks for non-trivial work, run SPEAR. If the work is trivial, say th
 4. Read `skills/spear/SKILL.md`.
 5. Read `docs/harness.md`.
 6. Read `docs/runtime.md`.
-7. If starter files do not exist, run `python3 scripts/init-project.py --name "<project name>"`.
-8. Ask the user the questions in `prompts/project-intake.md`.
-9. Create or update `state/PROJECT_STATE.md`.
-10. Produce a SCOPE block and wait for confirmation.
-11. After confirmation, create the PLAN.
-12. Execute, assess, and resolve.
+7. Read `docs/github-coordination.md` when the project uses GitHub issues, PRs, CI, or parallel agents.
+8. Read `docs/ux-critic.md` when the task changes visible product UX.
+9. If starter files do not exist, run `python3 scripts/init-project.py --name "<project name>"`.
+10. Ask the user the questions in `prompts/project-intake.md`.
+11. Create or update `state/PROJECT_STATE.md`.
+12. Produce a SCOPE block and wait for confirmation.
+13. After confirmation, create the PLAN.
+14. Execute, assess, and resolve.
 
 Do not start implementation before the SCOPE gate unless the user explicitly asks for a quick, trivial change.
 
@@ -35,11 +37,12 @@ Do not start implementation before the SCOPE gate unless the user explicitly ask
 
 ### Harness
 
-The software factory has three required pieces:
+The software factory has four required pieces:
 
 - Knowledge: agent instructions, domain files, craft files, and module files.
 - Workflow: SPEAR gates and unattended inner loops.
 - Runtime: prompt, state, verifier, logs, artifacts, and report contract.
+- Coordination: GitHub issues, pull requests, CI, and decision records when the work is shared.
 
 Skip any one and the loop becomes fragile.
 
@@ -151,6 +154,22 @@ State should include:
 
 For unattended work, use a mutable checklist state file. `state/RALPH_STATE.md` is the default template. The prompt is the recipe and changes rarely. The state file is the checklist and changes every iteration.
 
+### GitHub Coordination
+
+For production repositories, GitHub is the default coordination substrate.
+
+Use:
+
+- Epic issues for SPEAR cycles.
+- Agent task issues for parallel work units.
+- Claim comments for branch and scope locks.
+- Pull requests for evidence, review, CI, and merge.
+- Decision records for durable L1 and L2 decisions.
+
+Local state files still matter. They help one agent resume a run. GitHub matters more when multiple agents, reviewers, CI jobs, and deployment paths need the same view of the work.
+
+If a task spans multiple surfaces or agents, define shared contracts before parallel implementation. Do not let each agent invent its own data shape.
+
 ### Runtime Modes
 
 Use the smallest mode that fits the risk:
@@ -217,6 +236,7 @@ Convergence means a harsher round finds no material defects.
 ## Repository Map
 
 - `.github/`: portable CI preflight.
+- `.github/ISSUE_TEMPLATE/`: SPEAR epic and agent task templates.
 - `agents/`: generated foundation, domain, and module agent files.
 - `CODEX.md`: primary agent boot instructions.
 - `README.md`: human-facing repository overview.
@@ -253,3 +273,4 @@ When no project-specific state exists, do this:
 - No context-dependent handoff.
 - No placeholder left in a final artifact.
 - No em dash or en dash characters.
+- No user-facing UX copy that exposes implementation language when plain English would do.

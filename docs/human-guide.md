@@ -26,6 +26,7 @@ The human owns:
 - The rubric.
 - The Resolve gate.
 - Any decision to expand, stop, or change direction.
+- The choice of which epics and agent task issues are worth running in parallel.
 
 The agent owns:
 
@@ -35,6 +36,7 @@ The agent owns:
 - Running verification.
 - Producing evidence.
 - Keeping state current.
+- Claiming GitHub issues and keeping PR evidence current when GitHub is used.
 
 ## The Gates
 
@@ -57,6 +59,8 @@ Resolve gate:
 5. Require proof surfaces.
 6. Review `CLOSEOUT.md`.
 
+For parallel agent work, create a SPEAR epic issue first. Split execution into agent task issues only after the shared contract is stable enough that agents can work without stepping on each other. Ask each agent to claim one issue, create one branch, and open one PR with evidence.
+
 ## Proof Standard
 
 For meaningful work, ask for:
@@ -66,6 +70,8 @@ For meaningful work, ask for:
 - Artifacts.
 - Parsed report block.
 - Tests or e2e evidence when applicable.
+- Linked issue and PR evidence when GitHub is used.
+- Screenshots and UX critic notes when visible UX changes.
 
 ## When To Add E2E
 
@@ -77,4 +83,3 @@ npm run e2e
 ```
 
 Start with one smoke route and one critical journey.
-

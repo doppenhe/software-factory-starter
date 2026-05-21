@@ -12,6 +12,14 @@ Use these files for meaningful runs:
 - `state/ASSESSMENT.md`: rubric and defects.
 - `CLOSEOUT.md`: human handoff.
 
+When GitHub is in use, also track:
+
+- Epic issue: the SPEAR cycle and acceptance criteria.
+- Agent task issue: one claimable work unit.
+- Branch: the scope lock in code.
+- Pull request: the proof index.
+- Decision record: the durable reasoning behind consequential choices.
+
 ## PROMPT.md Structure
 
 Every execution prompt should have seven sections:
@@ -73,3 +81,4 @@ Checklists need both deterministic state and model judgment:
 - Stdout becomes the next prompt.
 - Postcheck is the defense against partial work being marked complete.
 
+For autonomous runs, the postcheck should fail closed. Missing report blocks, missing tests, missing screenshots for UI changes, or missing PR evidence should keep the task out of DONE.

@@ -1,17 +1,12 @@
-# CLOSEOUT
-
 ## What Changed
 
 ## Evidence
 
 ## Tests
 
-## Screenshots If UI
+## Screenshots, if UI
 
 ## Documentation Updated
 
 ## Risks
 
-## Open Questions
-
-## Next Iteration

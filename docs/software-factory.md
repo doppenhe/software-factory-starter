@@ -12,6 +12,14 @@ BLUF: the software factory is a repeatable way to turn ambiguous project intent 
 6. Resolve: hand off with evidence and open questions.
 7. Garden: remove L3 drift from specs and refresh briefs.
 
+When multiple agents or reviewers are involved, GitHub becomes the coordination layer around the factory stages:
+
+1. Epic issue captures the SPEAR cycle and acceptance criteria.
+2. Agent task issues split work into independently claimable units.
+3. Branches carry each scope lock.
+4. Pull requests carry evidence, tests, screenshots when relevant, and documentation updates.
+5. Decision records preserve the reasoning that should survive the branch.
+
 ## Required Artifacts
 
 Every meaningful project should have:
@@ -25,6 +33,13 @@ Every meaningful project should have:
 - `state/PROJECT_STATE.md`
 - Assessment notes.
 - Closeout.
+
+When the project uses GitHub, also include:
+
+- SPEAR epic issue.
+- Agent task issues with success criteria.
+- Pull request using the repo PR template.
+- Decision records for consequential choices.
 
 ## Agent Behavior
 
@@ -48,3 +63,4 @@ The complete harness includes:
 - Proof: logs, state, artifacts, and parseable report.
 - Coverage: matrix across the axes that matter.
 - Economics: cost, return, payback, and sunset discipline.
+- Coordination: issues, branches, PR evidence, CI, and decision records for parallel work.

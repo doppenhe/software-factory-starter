@@ -13,8 +13,10 @@ It includes:
 - MARR three-level thinking rules.
 - Road design rules for agent-native environments.
 - Harness runtime conventions.
+- GitHub issue, branch, PR, and CI coordination for parallel agents.
 - Intake prompts.
 - Scope, plan, state, assessment, and closeout templates.
+- SPEAR epic, agent task, work packet, and PR evidence templates.
 - Agent inheritance, runtime, coverage, and economics templates.
 - Example filled artifacts.
 - Durable state conventions.
@@ -35,6 +37,8 @@ The agent should read the operating model, ask the prompts in `prompts/project-i
 - Agent guide: `docs/agent-guide.md`
 - Portable setup: `docs/portable-setup.md`
 - E2E testing: `docs/e2e-testing.md`
+- GitHub coordination: `docs/github-coordination.md`
+- UX critic: `docs/ux-critic.md`
 
 ## Portable Setup
 
@@ -67,8 +71,10 @@ See `docs/e2e-testing.md` and `templates/e2e-plan.md`.
 5. `prompts/project-intake.md`
 6. `docs/harness.md`
 7. `docs/runtime.md`
-8. `docs/human-guide.md` for humans
-9. `docs/agent-guide.md` for agents
+8. `docs/github-coordination.md` when the project uses GitHub
+9. `docs/ux-critic.md` when visible UX changes
+10. `docs/human-guide.md` for humans
+11. `docs/agent-guide.md` for agents
 
 ## Core Workflow
 
@@ -86,11 +92,12 @@ MARR is the thinking model behind substantive artifacts:
 - L2: how the work is structured.
 - L3: the implemented artifact.
 
-The harness has three pieces:
+The harness has four pieces:
 
 - Knowledge: agent instructions and inherited context.
 - Workflow: SPEAR.
 - Runtime: prompt, state, verifier, logs, artifacts, and report contract.
+- Coordination: GitHub issues, branches, pull requests, CI, and decision records when parallel agents or reviewers are involved.
 
 ## Directory Structure
 

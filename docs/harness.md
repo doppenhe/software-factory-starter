@@ -2,15 +2,18 @@
 
 BLUF: the harness is what turns an agent from a one-shot prompt into a repeatable software factory worker.
 
-## Three Pieces
+## Four Pieces
 
-The harness has three pieces:
+The harness has four pieces:
 
 - Knowledge: `AGENTS.md`, `CODEX.md`, domain files, craft files, module files.
 - Workflow: SPEAR, with human gates around an unattended inner loop.
 - Runtime: prompt, state, verifier, logs, artifacts, and report contract.
+- Coordination: GitHub issues, pull requests, CI, and decision records when the work is shared.
 
-All three are required. Knowledge without runtime is advice. Runtime without workflow is motion without judgment. Workflow without knowledge makes the agent re-derive the project every run.
+All four are required once work is shared. Knowledge without runtime is advice. Runtime without workflow is motion without judgment. Workflow without knowledge makes the agent re-derive the project every run. Shared work without coordination makes agents collide silently.
+
+Coordination becomes required when more than one agent, reviewer, or deployment path is involved. Local state tells one runner what happened. GitHub tells the whole system what is claimed, blocked, reviewed, merged, and still risky.
 
 ## Knowledge Inheritance
 
@@ -31,6 +34,8 @@ The runtime uses two core files:
 
 The verifier decides whether work is done. The report block makes the runner parseable.
 
+For parallel work, the runtime also points to the GitHub issue and PR. The issue defines the scope lock. The PR proves what changed.
+
 ## Modes
 
 Use:
@@ -38,8 +43,8 @@ Use:
 - Foreground for exploration and calibration.
 - Background for one scoped task.
 - Map-reduce for independent sweeps where one reviewer can reduce many outputs.
+- GitHub-coordinated parallelism for independent agent task issues with explicit scope locks.
 
 ## Human Role
 
 Humans choose the bets, write the rubrics, approve gates, and reduce parallel outputs. Agents run the inner loop.
-

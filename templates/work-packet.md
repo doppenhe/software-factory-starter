@@ -1,18 +1,55 @@
 # WORK PACKET
 
-## Objective
+## Goal
+
+One sentence describing the user-facing outcome.
+
+## Success Criteria
+
+- [ ] 
 
 ## Inputs
 
-## Constraints
+Links, files, docs, issues, datasets, screenshots, or commands the agent must use.
 
-## Scope Link
+## Scope
 
-## Plan Link
+Files, subsystems, or behavior the agent owns.
 
-## Tasks
+## Non-Goals
 
-## Verification
+What the agent must not change.
 
-## Handoff Notes
+## Expected Output
 
+Issue, branch, PR, artifact, docs, or report expected at the end.
+
+## Test Plan
+
+Commands, CI checks, screenshots, manual proof, or staging checks required.
+
+## Parallelization Notes
+
+Scope lock, shared contracts, blocked areas, and safe neighboring work.
+
+## Documentation Updates
+
+Docs, specs, state files, or decision records that must be updated.
+
+## Claim
+
+```text
+CLAIMED by agent: {name}
+Branch: codex/{issue-number}-{slug}
+Scope lock: {files or subsystem}
+```
+
+## PR Evidence
+
+- What changed.
+- Evidence.
+- Tests.
+- Screenshots if UI changed.
+- Documentation updated.
+- Risks.
+- Open questions.

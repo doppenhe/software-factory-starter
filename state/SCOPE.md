@@ -15,12 +15,14 @@ Create a complete operating starting point that lets a cold agent ask project in
 - MARR three levels are included and mapped to SPEAR.
 - Intake prompts are batched.
 - Templates cover scope, plan, state, assessment, closeout, decisions, requirements, research, and run logs.
+- GitHub coordination is documented for parallel agent work.
+- Visible UX changes have an explicit UX critic path.
 - Verification catches missing core files and forbidden Unicode dash characters in starter paths.
 
 ## Non-Goals
 
 - No app implementation.
-- No custom CLI initializer in this version.
+- No full custom orchestration CLI in this version.
 - No changes to pre-existing unrelated artifacts in this directory.
 
 ## Format

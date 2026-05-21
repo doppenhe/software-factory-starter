@@ -70,6 +70,14 @@ APPROACH: Add Playwright docs, optional setup script, starter config, example sp
 
 STATUS: complete
 
+### Unit 9
+
+GOAL: Make parallel agent work safe and reviewable through GitHub.
+
+APPROACH: Add GitHub coordination docs, SPEAR epic and agent task issue templates, PR evidence standards, UX critic docs, and verification coverage for the new coordination files.
+
+STATUS: complete
+
 ## Risks
 
 - Pre-existing unrelated files in this directory can fail whole-repo style checks, so verification is scoped to starter paths.
