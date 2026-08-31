@@ -20,6 +20,8 @@ Treat each feature as a portfolio bet:
 - Risk.
 - Evidence.
 
+Build cost stops being an estimate once the spend log exists. Use the measured number. See `docs/cost-and-telemetry.md`.
+
 Weekly review beats quarterly planning when build cost and iteration cost collapse.
 
 ## Rollout

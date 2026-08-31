@@ -10,6 +10,14 @@ assignees: ""
 
 What should be true when this task is complete?
 
+## Plain-English Explanation
+
+What is wrong today:
+
+How this work will address it:
+
+Write this for a reader who does not know the repository.
+
 ## Success Criteria
 
 - [ ] 
@@ -32,7 +40,7 @@ PR, artifact, doc, test, screenshot, generated data, or other deliverable.
 
 ## Test Plan
 
-Commands, CI checks, screenshots, or manual proof required.
+Commands, CI checks, screenshots, or manual proof required. `bash scripts/agent-verify.sh` is required before the pull request.
 
 ## Parallelization Notes
 
@@ -43,6 +51,7 @@ Can this run in parallel? If yes, what is the safe write boundary?
 ```text
 CLAIMED by agent:
 Branch:
+Worktree:
 Scope lock:
 ```
 
