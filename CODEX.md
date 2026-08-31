@@ -16,20 +16,25 @@ If the user asks for non-trivial work, run SPEAR. If the work is trivial, say th
 
 ## Required Boot Sequence
 
-1. Read `CODEX.md`.
-2. Read `rules/communications.md`.
-3. Read `rules/thinking.md`.
-4. Read `skills/spear/SKILL.md`.
-5. Read `docs/harness.md`.
-6. Read `docs/runtime.md`.
-7. Read `docs/github-coordination.md` when the project uses GitHub issues, PRs, CI, or parallel agents.
-8. Read `docs/ux-critic.md` when the task changes visible product UX.
-9. If starter files do not exist, run `python3 scripts/init-project.py --name "<project name>"`.
-10. Ask the user the questions in `prompts/project-intake.md`.
-11. Create or update `state/PROJECT_STATE.md`.
-12. Produce a SCOPE block and wait for confirmation.
-13. After confirmation, create the PLAN.
-14. Execute, assess, and resolve.
+1. If you are in a local clone, run `git pull` first. Never operate against a stale copy. If the pull fails, stop and surface the error.
+2. Read `CODEX.md`.
+3. Read `rules/communications.md`.
+4. Read `rules/thinking.md`.
+5. Read `skills/spear/SKILL.md`.
+6. Read `docs/harness.md`.
+7. Read `docs/runtime.md`.
+8. Read `docs/agent-verification.md` before opening any pull request.
+9. Read `docs/github-coordination.md` when the project uses GitHub issues, PRs, CI, or parallel agents.
+10. Read `docs/contracts.md` when the task defines or changes a shape that more than one writer touches.
+11. Read `docs/data-safety.md` when the project holds real data.
+12. Read `docs/scheduled-work.md` when the task runs on a schedule rather than on demand.
+13. Read `docs/ux-critic.md` when the task changes visible product UX.
+14. If starter files do not exist, run `python3 scripts/init-project.py --name "<project name>"`.
+15. Ask the user the questions in `prompts/project-intake.md`.
+16. Create or update `state/PROJECT_STATE.md`.
+17. Produce a SCOPE block and wait for confirmation.
+18. After confirmation, create the PLAN.
+19. Execute, assess, and resolve.
 
 Do not start implementation before the SCOPE gate unless the user explicitly asks for a quick, trivial change.
 
@@ -166,6 +171,10 @@ Use:
 - Pull requests for evidence, review, CI, and merge.
 - Decision records for durable L1 and L2 decisions.
 
+Every agent-authored issue and pull request carries a plain-English explanation: what was wrong, and how this work addresses it. Write it for a reader who does not know the repository. This is what makes an agent pull request reviewable months later.
+
+Use a pull request for autonomous, bulk, or destructive work. Use a direct commit only when a human explicitly asked for the action and it is neither bulk nor destructive.
+
 Local state files still matter. They help one agent resume a run. GitHub matters more when multiple agents, reviewers, CI jobs, and deployment paths need the same view of the work.
 
 If a task spans multiple surfaces or agents, define shared contracts before parallel implementation. Do not let each agent invent its own data shape.
@@ -177,8 +186,10 @@ Use the smallest mode that fits the risk:
 - Foreground: exploration, small refactors, high-trust calibration.
 - Background: one scoped feature, one worktree, bounded runtime.
 - Map-reduce: independent audits, parity checks, polish sweeps, or fixes where many agents can map and one human can reduce.
+- Remote: a cloud run that survives the laptop closing. One repository per run, credentialed tests may skip, failure ends in a draft pull request and a report.
+- Scheduled: recurring work with a stable recipe, committed state, and an independent watchdog. See `docs/scheduled-work.md`.
 
-Parallelize only when scopes split cleanly and write ownership is clear.
+Parallelize only when scopes split cleanly and write ownership is clear. Give every parallel task its own worktree. Do not edit the shared main checkout while another agent may be working there.
 
 ### Proof Surfaces
 
@@ -193,11 +204,29 @@ The verifier decides done. The human reviews gates.
 
 For browser apps, add e2e tests as a proof surface. Default to Playwright unless the project already has a standard. Use smoke tests first, then journey tests, then regression coverage across the matrix that matters.
 
+### Verification Gate
+
+Before opening a pull request, run `bash scripts/agent-verify.sh` and put the result in the PR evidence. One command, named checks, no credentials, no writes.
+
+The harness must include a deterministic failing-fixture proof: build a known-bad input, run the real validator against it, and fail if the validator passes or fails for the wrong reason. A verifier nobody has watched fail is not proof. See `docs/agent-verification.md`.
+
+Never use `--no-verify`. Never merge on a red gate. If the gate is wrong, fix the gate in its own pull request.
+
+### Contracts
+
+When two or more writers touch the same shape, the contract ships as four artifacts: a contract doc, a schema, fixtures, and a validator wired into the verification gate. Prose alone is not a contract. Route appended or generated data through one writer that validates the complete resulting state before it writes. See `docs/contracts.md`.
+
+### Data Safety
+
+Any project holding real data enforces four rules in the verifier: a full-corpus secret scan, one decided home for raw source content with a branch-history scan for strays, content-free logs with an explicit field allowlist, and stated retention. Never commit binaries. Never hand-edit generated output. See `docs/data-safety.md`.
+
 ### Coverage
 
 Coverage is a span, not a count. A hundred tests in one cell do not prove breadth. Define the matrix that matters: persona, module, viewport, auth state, network state, data state, or other axes relevant to the project.
 
 ### Economics
+
+Measure spend before arguing about it. Log every model call content free with attribution, roll it up weekly, and alarm on regression against a baseline that deliberate one-off work cannot move. See `docs/cost-and-telemetry.md`.
 
 Every feature has a build cost and expected return. Treat the roadmap as a portfolio:
 
@@ -249,6 +278,7 @@ Convergence means a harsher round finds no material defects.
 - `state/`: durable project state.
 - `docs/`: project documentation.
 - `scripts/`: portable setup, verification, brief generation, and runner helpers.
+- `scripts/agent-verify.sh`: the pull request gate, copied from `templates/agent-verify.sh` and filled in per project.
 - `tests/e2e/`: optional Playwright starter tests.
 
 ## Default Run
@@ -274,3 +304,7 @@ When no project-specific state exists, do this:
 - No placeholder left in a final artifact.
 - No em dash or en dash characters.
 - No user-facing UX copy that exposes implementation language when plain English would do.
+- No pull request without a plain-English explanation of what was wrong and how the change addresses it.
+- No pull request without the verification gate result in the evidence section.
+- No `--no-verify`, no merge on a red gate, no auto-merge of autonomous work.
+- No hand-edited generated output and no binaries in git.

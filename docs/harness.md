@@ -32,7 +32,7 @@ The runtime uses two core files:
 - `PROMPT.md`: the recipe. It changes rarely.
 - `RALPH_STATE.md`: the mutable checklist. It changes every iteration.
 
-The verifier decides whether work is done. The report block makes the runner parseable.
+The verifier decides whether work is done. The report block makes the runner parseable. The verifier is one command, `bash scripts/agent-verify.sh`, and it must be provably able to fail. See `docs/agent-verification.md`.
 
 For parallel work, the runtime also points to the GitHub issue and PR. The issue defines the scope lock. The PR proves what changed.
 
@@ -41,9 +41,11 @@ For parallel work, the runtime also points to the GitHub issue and PR. The issue
 Use:
 
 - Foreground for exploration and calibration.
-- Background for one scoped task.
+- Background for one scoped task in its own worktree.
 - Map-reduce for independent sweeps where one reviewer can reduce many outputs.
 - GitHub-coordinated parallelism for independent agent task issues with explicit scope locks.
+- Remote for work that must survive the laptop closing.
+- Scheduled for recurring work with a stable recipe, committed state, and an independent watchdog.
 
 ## Human Role
 

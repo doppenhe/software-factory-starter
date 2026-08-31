@@ -13,7 +13,12 @@ It includes:
 - MARR three-level thinking rules.
 - Road design rules for agent-native environments.
 - Harness runtime conventions.
-- GitHub issue, branch, PR, and CI coordination for parallel agents.
+- A verification gate agents must pass before a pull request.
+- GitHub issue, branch, worktree, PR, and CI coordination for parallel agents.
+- The four-artifact contract bundle for shapes more than one writer touches.
+- Rules for scheduled work: committed state, watchdogs, content-free run logs.
+- Cost and session telemetry conventions.
+- Data safety rules: secret scanning, raw content placement, retention.
 - Intake prompts.
 - Scope, plan, state, assessment, and closeout templates.
 - SPEAR epic, agent task, work packet, and PR evidence templates.
@@ -36,6 +41,11 @@ The agent should read the operating model, ask the prompts in `prompts/project-i
 - Human guide: `docs/human-guide.md`
 - Agent guide: `docs/agent-guide.md`
 - Portable setup: `docs/portable-setup.md`
+- Agent verification: `docs/agent-verification.md`
+- Contracts: `docs/contracts.md`
+- Scheduled work: `docs/scheduled-work.md`
+- Data safety: `docs/data-safety.md`
+- Cost and telemetry: `docs/cost-and-telemetry.md`
 - E2E testing: `docs/e2e-testing.md`
 - GitHub coordination: `docs/github-coordination.md`
 - UX critic: `docs/ux-critic.md`
@@ -50,6 +60,15 @@ bash scripts/preflight.sh
 ```
 
 This creates local starter files such as `SPEC.md`, `BRIEF.md`, `PROMPT.md`, `state/SCOPE.md`, `state/PLAN.md`, and `state/RALPH_STATE.md`. It uses only Python 3 and Bash.
+
+Then wire the gate that every agent pull request must pass:
+
+```bash
+cp templates/agent-verify.sh scripts/agent-verify.sh
+chmod +x scripts/agent-verify.sh
+```
+
+Replace the example checks with the project's own and keep the failing-fixture proof.
 
 ## Optional E2E
 
@@ -71,10 +90,14 @@ See `docs/e2e-testing.md` and `templates/e2e-plan.md`.
 5. `prompts/project-intake.md`
 6. `docs/harness.md`
 7. `docs/runtime.md`
-8. `docs/github-coordination.md` when the project uses GitHub
-9. `docs/ux-critic.md` when visible UX changes
-10. `docs/human-guide.md` for humans
-11. `docs/agent-guide.md` for agents
+8. `docs/agent-verification.md` before any pull request
+9. `docs/github-coordination.md` when the project uses GitHub
+10. `docs/contracts.md` when more than one writer touches a shape
+11. `docs/data-safety.md` when the project holds real data
+12. `docs/scheduled-work.md` when work runs on a schedule
+13. `docs/ux-critic.md` when visible UX changes
+14. `docs/human-guide.md` for humans
+15. `docs/agent-guide.md` for agents
 
 ## Core Workflow
 
@@ -122,3 +145,7 @@ The harness has four pieces:
 ## Human Gate Rule
 
 For non-trivial work, the agent must stop after Scope and wait for confirmation. This prevents polished work on the wrong job.
+
+## Machine Gate Rule
+
+For any pull request, `bash scripts/agent-verify.sh` must pass and its result goes in the evidence. The human gate catches the wrong job. The machine gate catches the wrong work.

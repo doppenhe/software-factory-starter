@@ -9,3 +9,4 @@ coverage/
 tmp/
 *.log
 
+!examples/full-run/*.log

@@ -35,6 +35,16 @@ bash scripts/preflight.sh
 - `agents/domains/ENGINEERING.md`
 - `agents/modules/EXAMPLE.md`
 
+## Wire The Verification Gate
+
+```bash
+cp templates/agent-verify.sh scripts/agent-verify.sh
+chmod +x scripts/agent-verify.sh
+bash scripts/agent-verify.sh
+```
+
+Replace the example checks with the project's own, keeping the failing-fixture proof. This one command is the pull request gate for every agent. See `docs/agent-verification.md`.
+
 ## Runner Commands
 
 Print the next checklist item:
