@@ -2,38 +2,29 @@
 
 ## Audience
 
-Any agent or project owner starting a new software project from this repository.
+Who reads or uses the output. Include what they already know.
 
 ## Job
 
-Create a complete operating starting point that lets a cold agent ask project intake prompts, run SPEAR, apply MARR, maintain state, and begin software-factory execution.
+One sentence describing what changes after the output exists.
 
 ## Success Criteria
 
-- Agent boot instructions are explicit.
-- SPEAR is documented and required for non-trivial work.
-- MARR three levels are included and mapped to SPEAR.
-- Intake prompts are batched.
-- Templates cover scope, plan, state, assessment, closeout, decisions, requirements, research, and run logs.
-- GitHub coordination is documented for parallel agent work.
-- Visible UX changes have an explicit UX critic path.
-- Verification catches missing core files and forbidden Unicode dash characters in starter paths.
+Observable signs the work is complete.
 
 ## Non-Goals
 
-- No app implementation.
-- No full custom orchestration CLI in this version.
-- No changes to pre-existing unrelated artifacts in this directory.
+What is explicitly out of scope.
 
 ## Format
 
-Repository scaffold and documentation.
+The expected artifact: app, library, automation, analysis, documentation, PR, memo, deck, or mixed.
 
 ## Unknowns
 
-- Whether a future version should include a project initializer script.
-- Whether CI should be configured after the repo is pushed to a remote.
+What remains TBD.
 
 ## Confirmation
 
-Status: confirmed by follow-up clarification
+Status: unconfirmed
+

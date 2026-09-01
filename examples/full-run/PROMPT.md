@@ -25,7 +25,7 @@ Compare generated files against required starter files and run the verifier.
 
 ## Report Contract
 
-Use `templates/report-contract.md`.
+Use the report contract in `docs/runtime.md`.
 
 ## Rules
 

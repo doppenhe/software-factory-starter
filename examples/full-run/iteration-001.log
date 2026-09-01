@@ -1,0 +1,22 @@
+Iteration 001 log, example run.
+
+Ran: bash scripts/preflight.sh
+Result: verification passed
+
+Ran: bash scripts/agent-verify.sh --self-test-failure-only
+Result: Expected failure observed: invalid record rejected.
+
+<ralph-report>
+ITERATION: 001
+PHASE: Execute
+COMPLETED: booted the starter, ran one loop, proved the verifier fails on a known-bad input
+DEFECTS_FOUND: 1
+DEFECTS_FIXED: 1
+DEFECTS_REMAINING: 0
+FILES_CHANGED: state/RALPH_STATE.md
+TESTS: preflight passed, failing-fixture proof observed
+NEXT: none, campaign complete
+BLOCKERS: none
+PROGRESS: 3 of 3 tasks DONE
+</ralph-report>
+<promise>COMPLETE</promise>

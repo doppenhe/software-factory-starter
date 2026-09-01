@@ -4,6 +4,12 @@
 
 One sentence describing the user-facing outcome.
 
+## Plain-English Explanation
+
+What is wrong today:
+
+How this work will address it:
+
 ## Success Criteria
 
 - [ ] 

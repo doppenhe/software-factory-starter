@@ -1,24 +1,35 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# Verification gate for this repository. Same shape as templates/agent-verify.sh:
+# named checks, no credentials, no writes, and a proof that the lints can fail.
 
-paths=(
-  ".github"
-  "AGENTS.md"
-  "CODEX.md"
-  "README.md"
-  "docs"
-  "examples"
-  "prompts"
-  "rules"
-  "scripts"
-  "skills"
-  "state"
-  "templates"
-  "tests"
-  "playwright.config.ts"
-)
+set -u -o pipefail
 
-missing=0
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+FAILED=0
+FAILURES=()
+
+note() {
+  printf '%s\n' "$*"
+}
+
+run_check() {
+  local name="$1"
+  shift
+  note ""
+  note "== $name =="
+  if "$@"; then
+    note "PASS: $name"
+  else
+    local status=$?
+    note "FAIL: $name"
+    note "Exit code: $status"
+    FAILED=1
+    FAILURES+=("$name")
+  fi
+}
+
 required=(
   ".github/workflows/preflight.yml"
   ".github/workflows/e2e.yml"
@@ -28,39 +39,46 @@ required=(
   "CODEX.md"
   "AGENTS.md"
   "README.md"
+  "CONTRIBUTING.md"
+  "LICENSE"
   "rules/communications.md"
   "rules/thinking.md"
-  "docs/harness.md"
-  "docs/human-guide.md"
   "docs/agent-guide.md"
+  "docs/agent-verification.md"
+  "docs/contracts.md"
+  "docs/cost-and-telemetry.md"
+  "docs/data-safety.md"
+  "docs/e2e-testing.md"
+  "docs/github-coordination.md"
+  "docs/human-guide.md"
   "docs/portable-setup.md"
   "docs/runtime.md"
-  "docs/github-coordination.md"
+  "docs/scheduled-work.md"
   "docs/ux-critic.md"
-  "docs/proof-and-coverage.md"
-  "docs/e2e-testing.md"
   "skills/spear/SKILL.md"
   "prompts/project-intake.md"
-  "templates/scope.md"
-  "templates/plan.md"
-  "templates/project-state.md"
+  "templates/agent-verify.sh"
   "templates/assessment.md"
   "templates/brief.md"
+  "templates/closeout.md"
+  "templates/contract.md"
   "templates/coverage-matrix.md"
   "templates/decision-record.md"
-  "templates/e2e-plan.md"
-  "templates/closeout.md"
   "templates/domain-agent.md"
+  "templates/e2e-plan.md"
   "templates/feature-economics.md"
   "templates/foundation-agent.md"
   "templates/module-agent.md"
+  "templates/plan.md"
+  "templates/project-state.md"
   "templates/ralph-prompt.md"
   "templates/ralph-state.md"
-  "templates/report-contract.md"
+  "templates/scope.md"
   "templates/spec.md"
   "templates/spec-gardening.md"
   "templates/work-packet.md"
   "scripts/init-project.py"
+  "scripts/lint.py"
   "scripts/ralph.py"
   "scripts/generate-brief.py"
   "scripts/preflight.sh"
@@ -70,91 +88,85 @@ required=(
   "state/PROJECT_STATE.md"
 )
 
-for file in "${required[@]}"; do
-  if [[ ! -e "$file" ]]; then
-    echo "missing required file: $file"
-    missing=1
+check_required_files() {
+  local missing=0
+  for file in "${required[@]}"; do
+    if [[ ! -e "$file" ]]; then
+      note "missing required file: $file"
+      missing=1
+    fi
+  done
+  return "$missing"
+}
+
+check_dashes() {
+  python3 scripts/lint.py --root . --check dashes
+}
+
+check_paths() {
+  python3 scripts/lint.py --root . --check paths
+}
+
+# The lints above are only worth trusting because this check watches them fail.
+self_test_failing_fixture() {
+  local scratch output status
+  scratch="$(mktemp -d)"
+  trap 'rm -rf "${scratch:-}"; trap - RETURN' RETURN
+
+  python3 - "$scratch" <<'PY'
+import sys
+from pathlib import Path
+
+scratch = Path(sys.argv[1])
+(scratch / "docs").mkdir(parents=True, exist_ok=True)
+(scratch / "docs/dash.md").write_text("A sentence with a forbidden " + chr(0x2014) + " character.\n")
+(scratch / "docs/path.md").write_text("Clone it to " + "/" + "Users/example/project and run it.\n")
+PY
+
+  output="$(python3 scripts/lint.py --root "$scratch" docs 2>&1)"
+  status=$?
+
+  if [ "$status" -eq 0 ]; then
+    note "Known-bad fixture unexpectedly passed the lints."
+    note "$output"
+    return 1
   fi
-done
 
-if [[ "$missing" -ne 0 ]]; then
-  exit 1
-fi
+  if ! printf '%s\n' "$output" | grep -q "forbidden Unicode dash character"; then
+    note "Fixture failed, but the dash lint did not report it."
+    note "$output"
+    return 1
+  fi
 
-python3 - "$@" <<'PY'
-from pathlib import Path
-import sys
+  if ! printf '%s\n' "$output" | grep -q "local absolute path"; then
+    note "Fixture failed, but the absolute path lint did not report it."
+    note "$output"
+    return 1
+  fi
 
-paths = [
-    "AGENTS.md",
-    "CODEX.md",
-    "README.md",
-    "docs",
-    "examples",
-    "prompts",
-    "rules",
-    "scripts",
-    "skills",
-    "state",
-    "templates",
-]
+  note "Expected failures observed: dash lint and path lint both reported."
+}
 
-bad = False
-for root in paths:
-    path = Path(root)
-    files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
-    for file in files:
-        text = file.read_text(errors="ignore")
-        for index, char in enumerate(text):
-            if ord(char) in (0x2013, 0x2014):
-                line = text[:index].count("\n") + 1
-                print(f"{file}:{line}: forbidden Unicode dash character found")
-                bad = True
+main() {
+  note "Verify: deterministic local checks for this repository."
 
-if bad:
-    sys.exit(1)
-PY
+  run_check "Required files" check_required_files
+  run_check "Deterministic failing-fixture proof" self_test_failing_fixture
+  run_check "Forbidden dash characters" check_dashes
+  run_check "Local absolute paths" check_paths
 
-python3 - "$@" <<'PY'
-from pathlib import Path
-import re
-import sys
+  note ""
+  if [ "$FAILED" -ne 0 ]; then
+    note "Verification failed."
+    note "Failed check(s):"
+    for name in "${FAILURES[@]}"; do
+      note "- $name"
+    done
+    note "Next action: fix the first failing check above, then rerun bash scripts/verify.sh"
+    return 1
+  fi
 
-paths = [
-    ".github",
-    "AGENTS.md",
-    "CODEX.md",
-    "README.md",
-    "docs",
-    "examples",
-    "prompts",
-    "rules",
-    "scripts",
-    "skills",
-    "state",
-    "templates",
-]
-patterns = [
-    re.compile(r"/Users/"),
-    re.compile(r"/home/[A-Za-z0-9_.-]+"),
-    re.compile(r"C:\\Users\\"),
-]
+  note "Verification passed."
+}
 
-bad = False
-for root in paths:
-    path = Path(root)
-    files = [path] if path.is_file() else [p for p in path.rglob("*") if p.is_file()]
-    for file in files:
-        text = file.read_text(errors="ignore")
-        for line_no, line in enumerate(text.splitlines(), 1):
-            if file == Path("scripts/verify.sh") and ("re.compile" in line or "patterns =" in line):
-                continue
-            if any(pattern.search(line) for pattern in patterns):
-                print(f"{file}:{line_no}: local absolute path found")
-                bad = True
-
-if bad:
-    sys.exit(1)
-PY
-
-echo "verification passed"
+main "$@"

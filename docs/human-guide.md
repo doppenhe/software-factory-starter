@@ -38,7 +38,17 @@ The agent owns:
 - Keeping state current.
 - Claiming GitHub issues and keeping PR evidence current when GitHub is used.
 
+## Roles At Scale
+
+One person can run a small factory. Past that, three jobs separate:
+
+- Fleet manager: runs agents, watches worktrees, keeps green pull requests moving.
+- Process lead: owns specs, review gates, instrumentation, and postmortems.
+- Platform owner: owns the CLI, APIs, runners, and the internal tooling that turns goals into shipped code.
+
 ## The Gates
+
+There are two human gates and one machine gate. The machine gate is `bash scripts/agent-verify.sh`, and it is the one that runs on every pull request without you. Wire it early, watch it fail once on a known-bad input, and then stop reviewing what it already checks.
 
 Scope gate:
 
@@ -69,9 +79,24 @@ For meaningful work, ask for:
 - State.
 - Artifacts.
 - Parsed report block.
+- The verification gate result.
 - Tests or e2e evidence when applicable.
 - Linked issue and PR evidence when GitHub is used.
 - Screenshots and UX critic notes when visible UX changes.
+
+Read the plain-English explanation on every agent pull request first. If it does not make sense to you, the pull request is not ready, whatever the gate says.
+
+## Once Work Runs Unattended
+
+Three things need a human on a schedule rather than per run:
+
+- The watchdog alarm. A scheduled job cannot report its own death, so a watchdog on a different substrate opens an issue when the run log goes stale. Treat that issue as a page.
+- The weekly cost rollup. Spend grows without anyone deciding it should. The regression alert is the decision point.
+- The decision log. Durable decisions get recorded once and pointed at afterward. If the same question keeps getting re-litigated in issues, it never landed in the log.
+
+## Rollout
+
+Start narrow. Pick one team that already writes good specs, run a four-week pilot on one feature with one runner, and measure iterations, defects, and hours saved. Expand only when the pilot ships. If it does not ship, the harness is not ready.
 
 ## When To Add E2E
 

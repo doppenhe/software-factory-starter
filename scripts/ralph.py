@@ -12,40 +12,63 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "state/RALPH_STATE.md"
 PROMPT = ROOT / "PROMPT.md"
 
+ACTIVE = ("TODO", "DOING", "VERIFY", "AUDIT", "FIX", "PR", "BLOCKED")
+
 REPORT_RE = re.compile(r"<ralph-report>(.*?)</ralph-report>\s*<promise>(.*?)</promise>", re.S)
 
 
-def rows() -> list[list[str]]:
+def split_row(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def table() -> tuple[list[str], list[list[str]]]:
+    """Read the campaign table. Columns are located by header, not by position."""
     if not STATE.exists():
         raise SystemExit("missing state/RALPH_STATE.md. run scripts/init-project.py first")
-    found: list[list[str]] = []
+
+    headers: list[str] = []
+    rows: list[list[str]] = []
     for line in STATE.read_text().splitlines():
         line = line.strip()
         if not line.startswith("|"):
             continue
-        cells = [cell.strip() for cell in line.strip("|").split("|")]
-        if not cells or cells[0] in ("#", "---"):
+        cells = split_row(line)
+        if not cells:
             continue
-        if cells[0].startswith("-"):
+        if all(set(cell) <= {"-", ":"} and cell for cell in cells):
             continue
-        found.append(cells)
-    return found
+        if not headers:
+            headers = cells
+            continue
+        rows.append(cells)
+    if not headers:
+        raise SystemExit("no task table found in state/RALPH_STATE.md")
+    return headers, rows
+
+
+def status_index(headers: list[str]) -> int:
+    for index, name in enumerate(headers):
+        if name.lower() == "status":
+            return index
+    raise SystemExit("task table has no Status column")
 
 
 def cmd_next(_: argparse.Namespace) -> int:
     if not PROMPT.exists():
         raise SystemExit("missing PROMPT.md. run scripts/init-project.py first")
-    for cells in rows():
-        if len(cells) >= 6 and cells[5] in ("TODO", "BLOCKED", "DOING"):
-            print("NEXT CHECK")
-            print(f"id: {cells[0]}")
-            print(f"module: {cells[1]}")
-            print(f"check: {cells[2]}")
-            print(f"impact: {cells[3]}")
-            print("")
-            print("Read PROMPT.md, perform this check, then end with the report contract.")
-            return 0
-    print("no TODO rows")
+    headers, rows = table()
+    index = status_index(headers)
+    for cells in rows:
+        if len(cells) <= index or cells[index] not in ACTIVE:
+            continue
+        print("NEXT TASK")
+        for header, value in zip(headers, cells):
+            if value:
+                print(f"{header.lower()}: {value}")
+        print("")
+        print("Read PROMPT.md, work this task in its own worktree, then end with the report contract.")
+        return 0
+    print("no active rows")
     return 0
 
 

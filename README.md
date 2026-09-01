@@ -1,124 +1,94 @@
 # Software Factory Starter
 
-BLUF: this repository is a portable starter kit for agent-run software projects. It gives a cold agent enough structure to ask the right questions, define the work, run SPEAR, track state, assess quality, and hand off cleanly.
+BLUF: this is an operating template for running software projects with coding agents. It gives a cold agent enough structure to ask the right questions, define the work, run a gated workflow, keep state a later run can resume from, and prove what it did. It is not an app template and it contains no application code.
 
-## What This Is
+The rules here were not designed in the abstract. They come from repositories where agents open most of the pull requests, and every one of them exists because its absence caused a specific problem.
 
-This is not an app template. It is an operating template for starting any software project with agents.
+## Who This Is For
 
-It includes:
+You are running coding agents against a real repository, more than one at a time, and you have hit at least one of these:
 
-- A boot contract for agents.
-- SPEAR workflow instructions.
-- MARR three-level thinking rules.
-- Road design rules for agent-native environments.
-- Harness runtime conventions.
-- GitHub issue, branch, PR, and CI coordination for parallel agents.
-- Intake prompts.
-- Scope, plan, state, assessment, and closeout templates.
-- SPEAR epic, agent task, work packet, and PR evidence templates.
-- Agent inheritance, runtime, coverage, and economics templates.
-- Example filled artifacts.
-- Durable state conventions.
+- An agent produced polished work on the wrong job.
+- Two agents edited the same files and neither knew.
+- An agent reported success and the tests had not run.
+- A run ended and the next session had no idea what had happened.
+- Something automated has been failing for a week and nobody noticed.
 
-## How To Use It
+If none of that has happened yet, this repository will read as overhead. Come back when it does.
 
-Point an agent at this repository and tell it:
+## Quickstart
+
+```bash
+git clone https://github.com/doppenhe/software-factory-starter
+cd software-factory-starter
+python3 scripts/init-project.py --name "Your Project"
+bash scripts/preflight.sh
+```
+
+Then wire the gate that every agent pull request has to pass:
+
+```bash
+cp templates/agent-verify.sh scripts/agent-verify.sh
+chmod +x scripts/agent-verify.sh
+bash scripts/agent-verify.sh
+```
+
+Replace its example checks with your project's own, and keep the failing-fixture proof. Then point an agent at the repository:
 
 ```text
 Read CODEX.md and start the project intake.
 ```
 
-The agent should read the operating model, ask the prompts in `prompts/project-intake.md`, produce a SCOPE block, and wait for confirmation before implementation.
+The agent reads the operating model, asks the intake questions, produces a scope, and stops for your confirmation before it implements anything.
 
-## Guides
+Requirements are git, Bash, and Python 3. Browser end to end testing is optional and pulls in Node only if you ask for it.
 
-- Human guide: `docs/human-guide.md`
-- Agent guide: `docs/agent-guide.md`
-- Portable setup: `docs/portable-setup.md`
-- E2E testing: `docs/e2e-testing.md`
-- GitHub coordination: `docs/github-coordination.md`
-- UX critic: `docs/ux-critic.md`
+## The Model
 
-## Portable Setup
+Work runs through SPEAR: Scope, Plan, Execute, Assess, Resolve. Two human gates, one after Scope and one before handoff, with an unattended loop between Execute and Assess. Each assessment round uses a harsher lens than the last.
 
-After cloning on a new machine:
+Artifacts get thought about at three levels, borrowed from David Marr: why the artifact exists, how it is structured, and the artifact itself. Scope answers the first, Plan answers the second, Execute produces the third. When something comes out polished but wrong, this tells you which altitude failed.
 
-```bash
-python3 scripts/init-project.py --name "Your Project"
-bash scripts/preflight.sh
-```
+The harness has four pieces, and dropping any one makes the loop fragile:
 
-This creates local starter files such as `SPEC.md`, `BRIEF.md`, `PROMPT.md`, `state/SCOPE.md`, `state/PLAN.md`, and `state/RALPH_STATE.md`. It uses only Python 3 and Bash.
+- Knowledge: what the agent inherits before it reads the task.
+- Workflow: the gates and the inner loop.
+- Runtime: prompt, state, verifier, logs, artifacts, report contract.
+- Coordination: issues, branches, worktrees, pull requests, CI, decision records.
 
-## Optional E2E
+## What Is In Here
 
-For web projects, add Playwright when you need browser-backed proof:
+Start with `CODEX.md`. It is the operating model and the file an agent boots from. Everything else is detail behind it.
 
-```bash
-bash scripts/setup-playwright.sh
-npm run e2e
-```
+| Document | Answers |
+|----------|---------|
+| `docs/agent-verification.md` | What has to pass before an agent may open a pull request, and why a verifier nobody has watched fail is not proof |
+| `docs/github-coordination.md` | Issues, claims, scope locks, worktrees, labels, evidence, merge discipline, multiple repositories |
+| `docs/contracts.md` | How a shared data shape ships so two parallel agents cannot violate it |
+| `docs/runtime.md` | Prompt, campaign state, report contract, and the modes beyond one terminal |
+| `docs/scheduled-work.md` | Recurring agent work: committed state, watchdogs, content-free run logs |
+| `docs/data-safety.md` | Secret scanning, where raw source material may live, retention |
+| `docs/cost-and-telemetry.md` | Tracking what the agents cost before the bill is an argument |
+| `docs/e2e-testing.md` | Browser proof surfaces, when they earn their cost |
+| `docs/ux-critic.md` | Reviewing visible product changes before a human absorbs the cost |
+| `docs/agent-guide.md` | The short version for the agent |
+| `docs/human-guide.md` | The short version for you |
+| `docs/portable-setup.md` | Setup on a new machine, and the portability rules |
 
-See `docs/e2e-testing.md` and `templates/e2e-plan.md`.
+`templates/` holds the artifacts a run produces: scope, plan, contracts, work packets, assessments, closeouts, campaign state. `examples/full-run/` shows them filled in. `.github/` holds issue and pull request templates that ask for evidence rather than narrative.
 
-## First Files To Read
+## Two Rules Worth Stealing Even If You Ignore The Rest
 
-1. `CODEX.md`
-2. `rules/communications.md`
-3. `rules/thinking.md`
-4. `skills/spear/SKILL.md`
-5. `prompts/project-intake.md`
-6. `docs/harness.md`
-7. `docs/runtime.md`
-8. `docs/github-coordination.md` when the project uses GitHub
-9. `docs/ux-critic.md` when visible UX changes
-10. `docs/human-guide.md` for humans
-11. `docs/agent-guide.md` for agents
+Make the verifier prove it can fail. The gate builds a known-bad input, runs the real validator against it, and fails if that validator passes. Everything else the harness claims rests on this one check.
 
-## Core Workflow
+Make every agent pull request open with a plain-English explanation of what was wrong and how the change addresses it, written for someone who has never seen the repository. It is the difference between a merged pull request and an archaeological dig six months later.
 
-SPEAR is the required workflow for non-trivial work:
+## What This Is Not
 
-1. Scope
-2. Plan
-3. Execute
-4. Assess
-5. Resolve
+It does not call a model, orchestrate worktrees, or create issues for you. The runner validates a report block and prints the next task. Automating the rest is a project decision, and hard-coding it here would make the repository less portable, not more useful.
 
-MARR is the thinking model behind substantive artifacts:
+It also assumes GitHub for coordination. The workflow survives elsewhere, but the issue templates and labels would need translating.
 
-- L1: why this work exists.
-- L2: how the work is structured.
-- L3: the implemented artifact.
+## License
 
-The harness has four pieces:
-
-- Knowledge: agent instructions and inherited context.
-- Workflow: SPEAR.
-- Runtime: prompt, state, verifier, logs, artifacts, and report contract.
-- Coordination: GitHub issues, branches, pull requests, CI, and decision records when parallel agents or reviewers are involved.
-
-## Directory Structure
-
-```text
-.
-├── .github/
-├── AGENTS.md
-├── CODEX.md
-├── README.md
-├── agents/
-├── docs/
-├── examples/
-├── prompts/
-├── rules/
-├── scripts/
-├── skills/
-├── state/
-├── templates/
-└── work/
-```
-
-## Human Gate Rule
-
-For non-trivial work, the agent must stop after Scope and wait for confirmation. This prevents polished work on the wrong job.
+MIT. See `LICENSE`.

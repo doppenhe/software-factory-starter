@@ -2,7 +2,7 @@
 name: SPEAR epic
 about: Parent issue for a non-trivial development run
 title: ""
-labels: "type:contract"
+labels: "epic"
 assignees: ""
 ---
 
